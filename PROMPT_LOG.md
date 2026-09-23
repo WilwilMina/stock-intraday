@@ -45,5 +45,13 @@ Subagent runs happen in a separate context, so they do not appear in the main tr
 Changes I made by hand, with the reasoning for each.
 
 | File / area | What I changed | Why |
+|Github Repo and git Setup|Created the repo need a working remote. No AI generated Code|
+|fixtures/tsla/15-1mo.json|Fetched the raw Yahoo Data with curl.exe and read it myself|to learn the real data shape before prompting|
+|.claude/settings.json|Wired the hook in by hand and restarted Claude Code|Enable automatic prompt loggin|
 |---|---|---|
-| _TODO_ | | |
+|---|---|---|
+
+### Entry 0b: Prompt-logging hook and QA agent (Claude chat)
+- **Prompt:** Asked for a way to auto-log every prompt, and for a QA agent alongside the reviewer.
+- **Why:** The assessment grades the prompt log, and I didn't want to lose entries or reconstruct them at the end. I also wanted QA separate from review.
+- **Kept / changed / rejected:** _TODO: what you actually changed_

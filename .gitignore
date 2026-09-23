@@ -8,3 +8,5 @@ coverage/
 *.log
 .DS_Store
 .vite/
+CLAUDE.local.md
+.claude/rules/
