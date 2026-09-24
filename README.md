@@ -31,7 +31,7 @@ npm ci
 npm run dev
 ```
 
-Open http://localhost:5173. In dev, Vite proxies `/api` to the backend on port 3000, so no CORS setup is needed.
+Open http://localhost:5173. In dev, Vite proxies `/api` to the backend on port 3000, so no CORS setup is needed. The proxy target is fixed at port 3000: if you run the backend on another `PORT`, change the target in `frontend/vite.config.ts` to match.
 
 To check the API directly:
 
@@ -70,7 +70,7 @@ All variables are optional. The defaults are listed in `backend/.env.example` an
 | `CORS_ORIGIN` | `http://localhost:5173` | Comma-separated allowed origins. Only needed when the frontend isn't using the dev proxy |
 | `VITE_API_BASE_URL` (frontend) | empty | Backend origin for a production build. Leave empty in dev |
 
-If a value is invalid, the backend prints one line (`Invalid config: PORT: Expected number, received nan`) and exits with code 1.
+If a value is invalid, the backend prints one line (`Invalid config: PORT: Expected number, received nan`) and exits with code 1. Under `npm run dev`, the file watcher prints the same line but keeps running until you stop it.
 
 ## Checks
 
