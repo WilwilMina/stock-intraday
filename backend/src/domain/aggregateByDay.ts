@@ -83,8 +83,9 @@ export function aggregateByDay(bars: Bar[], exchangeTimezoneName: string): Daily
     volume: bucket.volume,
   }));
 
-  // Bar timestamps aren't guaranteed sorted or deduplicated by the upstream
-  // provider, so sort explicitly rather than relying on Map insertion order.
+  // Bar timestamps aren't guaranteed sorted by the upstream provider, so sort
+  // explicitly rather than relying on Map insertion order. (Duplicate
+  // timestamps are not deduplicated; each bar counts - a known limitation.)
   aggregates.sort((a, b) => (a.day < b.day ? -1 : a.day > b.day ? 1 : 0));
 
   return aggregates;

@@ -78,6 +78,6 @@ Ambiguities in the brief and how we resolve them. Each of these must be stated i
 | Sample response shows a 2009 date | Just an illustrative example; do not hardcode anything from it |
 | Invalid symbol | Yahoo returns a 404 error payload; surface as a clean 404 from our API |
 | Sort order | Ascending by day (oldest first) |
-| Yahoo endpoint is unofficial and can rate-limit | Isolate behind a provider interface, add a short-TTL cache, document the risk |
+| Yahoo endpoint is unofficial and can rate-limit | Isolate behind a provider interface and document the risk. A short-TTL cache was planned but deliberately not built (known limitation) |
 
 Grading signals to keep in mind: working end-to-end, production-minded structure (SOLID, tests, error handling, config), a README a stranger can follow, and a prompt log that shows real judgment (things rejected or changed, not just accepted).
