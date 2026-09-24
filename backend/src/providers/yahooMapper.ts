@@ -9,10 +9,13 @@ import type { Bar } from "../domain/aggregateByDay.js";
 import type { NormalizedBars } from "./MarketDataProvider.js";
 import { InvalidSymbolError, UpstreamError } from "../errors/AppError.js";
 
+// For a valid symbol with no bars in the window (delisted, halted, illiquid),
+// Yahoo omits `timestamp` and returns `quote: [{}]`. Defaulting these to []
+// turns that into an empty result (200 []) rather than a shape error (502).
 const yahooQuoteSchema = z.object({
-  low: z.array(z.number().nullable()),
-  high: z.array(z.number().nullable()),
-  volume: z.array(z.number().nullable()),
+  low: z.array(z.number().nullable()).default([]),
+  high: z.array(z.number().nullable()).default([]),
+  volume: z.array(z.number().nullable()).default([]),
 });
 
 const yahooChartResultSchema = z.object({
@@ -20,7 +23,7 @@ const yahooChartResultSchema = z.object({
     exchangeTimezoneName: z.string(),
     regularMarketTime: z.number(),
   }),
-  timestamp: z.array(z.number()),
+  timestamp: z.array(z.number()).default([]),
   indicators: z.object({
     quote: z.array(yahooQuoteSchema).min(1),
   }),

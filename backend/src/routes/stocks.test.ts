@@ -12,7 +12,6 @@ import { InvalidSymbolError, UpstreamError } from "../errors/AppError.js";
 const testConfig: AppConfig = {
   port: 0,
   yahooBaseUrl: "https://example.invalid",
-  cacheTtlSeconds: 30,
   requestTimeoutMs: 5000,
   corsOrigins: ["http://localhost:5173"],
 };

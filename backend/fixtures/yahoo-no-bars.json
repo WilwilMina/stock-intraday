@@ -1,0 +1,24 @@
+{
+  "chart": {
+    "result": [
+      {
+        "meta": {
+          "currency": "USD",
+          "symbol": "TEST",
+          "exchangeName": "NMS",
+          "instrumentType": "EQUITY",
+          "gmtoffset": -14400,
+          "timezone": "EDT",
+          "exchangeTimezoneName": "America/New_York",
+          "regularMarketTime": 1718375400,
+          "dataGranularity": "15m",
+          "range": "1mo"
+        },
+        "indicators": {
+          "quote": [{}]
+        }
+      }
+    ],
+    "error": null
+  }
+}

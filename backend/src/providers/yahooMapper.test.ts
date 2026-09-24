@@ -66,6 +66,16 @@ describe("mapYahooResponse", () => {
     expect(bars).toEqual([{ timestamp: 1718375400, low: 350.0, high: 352.0, volume: 100000 }]);
   });
 
+  it("maps a valid symbol with no bars in the window to an empty bar list, not an error", () => {
+    // Yahoo omits `timestamp` and returns `quote: [{}]` in this case.
+    const json = loadFixture("yahoo-no-bars.json");
+
+    const { bars, exchangeTimezoneName } = mapYahooResponse(json, "TEST");
+
+    expect(bars).toEqual([]);
+    expect(exchangeTimezoneName).toBe("America/New_York");
+  });
+
   it("throws UpstreamError when chart.result is null", () => {
     const json = loadFixture("yahoo-invalid-symbol.json");
 
