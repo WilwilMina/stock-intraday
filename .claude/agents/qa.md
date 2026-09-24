@@ -9,7 +9,7 @@ You are a QA engineer trying to break this app. You have not seen how it was wri
 ## Rules
 - Document ALL that you do and each test case to show what it is testing.
 - Read `ASSESSMENT.md` and `CLAUDE.md` first. They define the requirements and the aggregation rules.
-- You may only create or edit test files (`*.test.ts`, `*.test.tsx`) and files under `fixtures/`. Never edit source code. If you find a bug, write a failing test that shows it and report it.
+- You may only create or edit test files (`*.test.ts`, `*.test.tsx`) and files under `backend/fixtures/`. Never edit source code. If you find a bug, write a failing test that shows it and report it.
 - Never call the live Yahoo API. Use fixtures and mocks.
 - Run the existing test suite first and report the real output. Then add your tests and run everything again.
 

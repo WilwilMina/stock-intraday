@@ -8,7 +8,7 @@ Full-stack app: a Node/TypeScript API that pulls the last month of 15-minute bar
 
 ## Stack
 
-- Backend: Node 20+, TypeScript (strict), Fastify (or Express), zod for validation, Vitest for tests
+- Backend: Node 20+, TypeScript (strict), Fastify, zod for validation, Vitest for tests
 - Frontend: React + Vite + TypeScript, Vitest + Testing Library for a few component tests
 - Lint/format: ESLint + Prettier
 - Layout: `backend/` and `frontend/` as separate packages; root README explains running both
@@ -33,6 +33,27 @@ route (HTTP only)  ->  StockService  ->  MarketDataProvider (interface)
 
 Endpoint: `GET /api/stocks/:symbol/daily` returns the JSON array in the brief's exact format. Also `GET /health`.
 
+## Decisions (design interview, resolved before backend implementation)
+
+Outcomes of a `/grill-me` session over the open points above `CLAUDE.md` didn't already settle. Supersedes anything above that reads as ambiguous.
+
+| # | Question | Decision |
+|---|---|---|
+| Q1 | Fastify vs Express | Fastify. Validate route params with plain zod `.parse()`; no type-provider plugin. |
+| Q2 | Timezone handling | Native `Intl.DateTimeFormat`, no library. Use the `en-CA` locale so `.format()` returns `YYYY-MM-DD` directly; cache one formatter per timezone. |
+| Q3 | Outbound HTTP client | Native `fetch` + `AbortSignal.timeout(REQUEST_TIMEOUT_MS)`. Send the brief's `User-Agent` header. |
+| Q4 | Provider testability | `mapYahooResponse` is a pure function tested against fixtures. The HTTP-fetching wrapper takes an **injected `fetch`** (default: global `fetch`), so the status-to-error mapping (404 -> `InvalidSymbolError`; 429/5xx/timeout -> `UpstreamError`) is unit-tested by injecting a fake `fetch`, with no HTTP-mocking library. |
+| Q5 | Retry policy | No retry for the MVP. A transient failure surfaces immediately as `UpstreamError` -> 502. Documented as a known limitation in the README. |
+| Q6 | Cache shape | The `CachingMarketDataProvider` decorator caches the provider's normalized output (bars + timezone), never the aggregated result and never an error response. |
+| Q7 | `CORS_ORIGIN` format | Comma-separated string, split into an array at config-validation time. |
+| Q8 | The in-progress "today" bar | Yahoo's response includes a final bar whose `timestamp` equals `meta.regularMarketTime` with `volume: 0` — the still-forming, not-yet-closed period. This is **excluded**, narrowly: only when `timestamp === meta.regularMarketTime && volume === 0`. A genuine zero-volume bar elsewhere in the array is left alone; only `null` low/high/volume gets skipped by `aggregateByDay`'s general rule. |
+| Q9 | Cache eviction | A hand-rolled bounded `Map` (~100 entries), not the `lru-cache` package. On a cache hit, delete-then-re-set the key so it moves to the end, giving true LRU ordering for free. Expired entries are dropped lazily on read (no background sweep). |
+| Q10 | Where Q8's exclusion lives | Inside `mapYahooResponse` (the Yahoo provider), not `aggregateByDay`. `regularMarketTime` is Yahoo-specific vocabulary; `aggregateByDay` must stay provider-agnostic per the architecture above, so it never learns this concept exists. Tested as a `yahooMapper` fixture case, not an `aggregateByDay` case. |
+
+Two implementation notes that came out of the same session, not disagreements with the plan above:
+- Fastify's built-in logger already is pino — configure `fastify({ logger: {...} })` rather than adding a standalone `pino` dependency.
+- Fixtures live in `backend/fixtures/` (moved from a repo-root `fixtures/`), consistent with `backend/` and `frontend/` being separate packages.
+
 ## Aggregation rules (do not change without discussing)
 
 - Group by calendar date in `meta.exchangeTimezoneName`, not UTC
@@ -52,7 +73,7 @@ Endpoint: `GET /api/stocks/:symbol/daily` returns the JSON array in the brief's 
 ## Testing
 
 - Unit: `aggregateByDay` using a fixture with nulls, a timezone-boundary bar, and a day with all-null bars
-- Unit: Yahoo provider mapping (including the invalid-symbol payload) against fixtures in `fixtures/`
+- Unit: Yahoo provider mapping (including the invalid-symbol payload) against fixtures in `backend/fixtures/`
 - Integration: one route test with a mocked provider (200, 400, 404, 502)
 - Never call the live Yahoo API in tests
 
