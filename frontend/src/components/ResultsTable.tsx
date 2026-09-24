@@ -14,26 +14,30 @@ export function ResultsTable({ symbol, data }: ResultsTableProps) {
   const newestFirst = [...data].reverse();
 
   return (
-    <table>
-      <caption>Daily aggregates for {symbol}</caption>
-      <thead>
-        <tr>
-          <th scope="col">Day</th>
-          <th scope="col">Low average</th>
-          <th scope="col">High average</th>
-          <th scope="col">Volume</th>
-        </tr>
-      </thead>
-      <tbody>
-        {newestFirst.map((row) => (
-          <tr key={row.day}>
-            <td>{row.day}</td>
-            <td>{row.lowAverage.toFixed(4)}</td>
-            <td>{row.highAverage.toFixed(4)}</td>
-            <td>{row.volume.toLocaleString("en-US")}</td>
+    // Scrolls horizontally instead of wrapping cell content mid-word on
+    // narrow viewports (see App.css's .table-scroll / white-space rules).
+    <div className="table-scroll">
+      <table>
+        <caption>Daily aggregates for {symbol}</caption>
+        <thead>
+          <tr>
+            <th scope="col">Day</th>
+            <th scope="col">Low average</th>
+            <th scope="col">High average</th>
+            <th scope="col">Volume</th>
           </tr>
-        ))}
-      </tbody>
-    </table>
+        </thead>
+        <tbody>
+          {newestFirst.map((row) => (
+            <tr key={row.day}>
+              <td>{row.day}</td>
+              <td>{row.lowAverage.toFixed(4)}</td>
+              <td>{row.highAverage.toFixed(4)}</td>
+              <td>{row.volume.toLocaleString("en-US")}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
   );
 }
