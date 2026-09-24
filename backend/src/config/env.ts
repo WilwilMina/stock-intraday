@@ -1,6 +1,7 @@
 // Validates and normalizes process.env into a typed AppConfig at startup.
-// Fails fast (throws) on missing/invalid values so bad config never reaches
-// the rest of the app; index.ts is responsible for logging and exiting.
+// Fails fast (throws ConfigError) on invalid values so bad config never
+// reaches the rest of the app; index.ts prints the message and exits 1.
+// Every variable has a default, so no .env file is required to run.
 
 import { z } from "zod";
 
@@ -27,8 +28,25 @@ export type AppConfig = {
   corsOrigins: string[];
 };
 
+export class ConfigError extends Error {
+  constructor(message: string) {
+    super(message);
+    this.name = "ConfigError";
+  }
+}
+
 export function loadConfig(env: NodeJS.ProcessEnv = process.env): AppConfig {
-  const parsed = envSchema.parse(env);
+  const result = envSchema.safeParse(env);
+  if (!result.success) {
+    // One readable line (e.g. "Invalid config: PORT: Expected number, received
+    // nan") instead of zod's multi-line JSON issue dump.
+    const details = result.error.issues
+      .map((issue) => `${issue.path.join(".")}: ${issue.message}`)
+      .join("; ");
+    throw new ConfigError(`Invalid config: ${details}`);
+  }
+
+  const parsed = result.data;
   return {
     port: parsed.PORT,
     yahooBaseUrl: parsed.YAHOO_BASE_URL,
