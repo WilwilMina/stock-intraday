@@ -52,9 +52,11 @@ describe("GET /api/stocks/:symbol/daily", () => {
 
     expect(response.statusCode).toBe(400);
     expect(provider.calls).toBe(0);
+    const body = response.json() as { error: { code: string; message: string } };
+    expect(body.error.code).toBe("VALIDATION_ERROR");
   });
 
-  it("404: maps InvalidSymbolError to a 404 with a clean message", async () => {
+  it("404: maps InvalidSymbolError to a 404 with a clean message and INVALID_SYMBOL code", async () => {
     const provider = new FakeMarketDataProvider(async (symbol) => {
       throw new InvalidSymbolError(symbol);
     });
@@ -63,10 +65,12 @@ describe("GET /api/stocks/:symbol/daily", () => {
     const response = await app.inject({ method: "GET", url: "/api/stocks/ZZZZZZINVALID/daily" });
 
     expect(response.statusCode).toBe(404);
-    expect(response.json()).toEqual({ error: 'No data found for symbol "ZZZZZZINVALID"' });
+    expect(response.json()).toEqual({
+      error: { code: "INVALID_SYMBOL", message: 'No data found for symbol "ZZZZZZINVALID"' },
+    });
   });
 
-  it("502: maps UpstreamError to a 502 without leaking upstream details", async () => {
+  it("502: maps UpstreamError to a 502 with an UPSTREAM_ERROR code and no leaked upstream details", async () => {
     const provider = new FakeMarketDataProvider(async () => {
       throw new UpstreamError("Yahoo responded with status 500 for \"TSLA\" - secret upstream detail", {
         cause: { some: "upstream body" },
@@ -78,7 +82,23 @@ describe("GET /api/stocks/:symbol/daily", () => {
 
     expect(response.statusCode).toBe(502);
     const body: unknown = response.json();
-    expect(body).toEqual({ error: "Failed to fetch data from the upstream provider" });
+    expect(body).toEqual({
+      error: { code: "UPSTREAM_ERROR", message: "Failed to fetch data from the upstream provider" },
+    });
     expect(JSON.stringify(body)).not.toContain("secret upstream detail");
+  });
+
+  it("404: an unmatched route uses the same error shape with a NOT_FOUND code", async () => {
+    const provider = new FakeMarketDataProvider(async () => {
+      throw new Error("should not be called");
+    });
+    const app = await buildApp(testConfig, { provider });
+
+    const response = await app.inject({ method: "GET", url: "/api/does-not-exist" });
+
+    expect(response.statusCode).toBe(404);
+    const body = response.json() as { error: { code: string; message: string } };
+    expect(body.error.code).toBe("NOT_FOUND");
+    expect(typeof body.error.message).toBe("string");
   });
 });
