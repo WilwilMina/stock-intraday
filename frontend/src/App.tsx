@@ -43,7 +43,7 @@ export function App() {
   return (
     <main>
       <h1>Stock Intraday</h1>
-      <SymbolForm onSubmit={handleSubmit} disabled={state.kind === "loading"} />
+      <SymbolForm onSubmit={handleSubmit} />
       <StatusMessage state={state} />
       {state.kind === "success" && state.data.length > 0 && (
         <ResultsTable symbol={state.symbol} data={state.data} />
