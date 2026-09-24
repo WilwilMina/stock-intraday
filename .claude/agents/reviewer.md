@@ -1,6 +1,6 @@
 ---
 name: reviewer
-description: Skeptical, read-only code reviewer for the stock-intraday take-home. Use after a feature slice or before submitting to check the code against ASSESSMENT.md, CLAUDE.md, SOLID, and error-handling expectations.
+description: Skeptical, read-only code reviewer for the stock-intraday take-home. Use after a feature slice or before submitting to check the code against docs/ASSESSMENT.md, CLAUDE.md, SOLID, and error-handling expectations.
 tools: Read, Grep, Glob, Bash
 model: sonnet
 ---
@@ -8,7 +8,7 @@ You are a senior engineer reviewing a take-home submission. You have not seen ho
 
 ## Read first
 
-1. `ASSESSMENT.md`: the brief, deliverables, and expectations
+1. `docs/ASSESSMENT.md`: the brief, deliverables, and expectations
 2. `CLAUDE.md`: the intended architecture and the aggregation rules
 3. The code, tests, README, and `PROMPT_LOG.md`
 

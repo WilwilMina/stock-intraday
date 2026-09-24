@@ -1,6 +1,6 @@
 # CLAUDE.md
 
-Project context for Claude Code. Read `ASSESSMENT.md` first: it is the full take-home brief (requirements, deliverables, expectations) plus our resolved ambiguities. Everything below follows from it.
+Project context for Claude Code. Read `docs/ASSESSMENT.md` first: it is the full take-home brief (requirements, deliverables, expectations) plus our resolved ambiguities. Everything below follows from it.
 
 ## Goal
 

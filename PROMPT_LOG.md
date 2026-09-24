@@ -19,7 +19,7 @@ Subagent runs happen in a separate context, so they do not appear in the main tr
 
 ### Entry 0: Repo scaffold (Claude chat, before Claude Code)
 
-- **Prompt:** Asked Claude how to approach the assessment and to scaffold the repo with the full brief as context (`ASSESSMENT.md`), a `CLAUDE.md`, this log, and a reviewer agent definition.
+- **Prompt:** Asked Claude how to approach the assessment and to scaffold the repo with the full brief as context (`ASSESSMENT.md`, later moved to `docs/ASSESSMENT.md`), a `CLAUDE.md`, this log, and a reviewer agent definition.
 - **Why:** I wanted the AI to have the full brief from the start and I wanted to understand what the assessors were grading before writing any code.
 - **Kept / changed / rejected:** _TODO: fill in honestly. For example, what you changed in `CLAUDE.md` (stack, endpoint name, aggregation rules) after reading it._
 

@@ -5,6 +5,21 @@ Enter a stock symbol and see, for each trading day of the last month, the averag
 - `backend/`: Node + TypeScript + Fastify API, `GET /api/stocks/:symbol/daily`
 - `frontend/`: React + Vite + TypeScript UI
 
+## Repository layout
+
+```
+.
+├── backend/              Node/TypeScript API (see Source layout below)
+├── frontend/             React/Vite UI (see Source layout below)
+├── docs/
+│   ├── ASSESSMENT.md       the take-home brief and our resolved ambiguities
+│   └── PROMPT_LOG.raw.md   every prompt, auto-logged by a Claude Code hook
+├── .claude/              agents, hooks, and project-specific rules
+├── CLAUDE.md             architecture and design decisions
+├── PROMPT_LOG.md         the curated AI prompt log (what/why/kept/changed)
+└── README.md             this file
+```
+
 ## Prerequisites
 
 - Node `22.13+` or `24+` (the exact range is in each `package.json` `engines` field; Node 20 is not supported)
@@ -86,7 +101,7 @@ npm run build
 - Backend: Vitest unit tests for the aggregation, the Yahoo mapper (against a real captured TSLA response plus synthetic edge-case fixtures in `backend/fixtures/`), the HTTP provider (with an injected fake `fetch`), config, and one route integration test.
 - Frontend: Vitest and Testing Library tests for the form, the table and the app's state handling, including the rapid-resubmit race.
 
-## Layout
+## Source layout
 
 ```
 backend/src/

@@ -8,7 +8,7 @@ process.stdin.on("end", () => {
     const { prompt, session_id, cwd } = JSON.parse(input);
     const fence = "`".repeat(4);
     const entry = `\n## ${new Date().toISOString()} (session ${String(session_id).slice(0, 8)})\n\n${fence}\n${prompt}\n${fence}\n\n- **Why:** \n- **Kept / changed / rejected:** \n`;
-    appendFileSync(join(cwd ?? process.cwd(), "PROMPT_LOG.raw.md"), entry);
+    appendFileSync(join(cwd ?? process.cwd(), "docs", "PROMPT_LOG.raw.md"), entry);
   } catch {
     // never block the session because logging failed
   }
