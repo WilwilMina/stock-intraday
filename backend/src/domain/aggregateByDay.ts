@@ -49,14 +49,22 @@ function roundTo4Decimals(value: number): number {
   return Math.round(value * 10000) / 10000;
 }
 
+// `=== null` alone lets NaN and +/-Infinity slip through (neither is null,
+// but neither is meaningful data either): a corrupted field would otherwise
+// silently poison a whole day's average/sum instead of being skipped like a
+// null field is. Number.isFinite rejects null, NaN, and Infinity alike.
+function isFiniteNumber(value: number | null): value is number {
+  return value !== null && Number.isFinite(value);
+}
+
 export function aggregateByDay(bars: Bar[], exchangeTimezoneName: string): DailyAggregate[] {
   const byDay = new Map<string, { lows: number[]; highs: number[]; volume: number }>();
 
   for (const bar of bars) {
-    // A bar missing any of these three fields can't contribute a meaningful
-    // average or total, so the whole bar is dropped rather than partially
-    // counted.
-    if (bar.low === null || bar.high === null || bar.volume === null) {
+    // A bar missing (or with a non-finite) low, high, or volume can't
+    // contribute a meaningful average or total, so the whole bar is dropped
+    // rather than partially counted.
+    if (!isFiniteNumber(bar.low) || !isFiniteNumber(bar.high) || !isFiniteNumber(bar.volume)) {
       continue;
     }
 
