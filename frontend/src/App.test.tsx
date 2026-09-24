@@ -70,7 +70,7 @@ describe("App", () => {
     await user.type(screen.getByLabelText("Stock symbol"), "ZZZ");
     await user.click(screen.getByRole("button", { name: "Get daily data" }));
 
-    await waitFor(() => expect(screen.getByRole("status")).toHaveTextContent('No data found for symbol "ZZZ"'));
+    await waitFor(() => expect(screen.getByRole("alert")).toHaveTextContent('No data found for symbol "ZZZ"'));
   });
 
   it("shows the failed-request message for an upstream or network failure", async () => {
@@ -82,7 +82,7 @@ describe("App", () => {
     await user.click(screen.getByRole("button", { name: "Get daily data" }));
 
     await waitFor(() =>
-      expect(screen.getByRole("status")).toHaveTextContent("Something went wrong fetching data. Please try again."),
+      expect(screen.getByRole("alert")).toHaveTextContent("Something went wrong fetching data. Please try again."),
     );
   });
 

@@ -1,49 +1,86 @@
+/* Design tokens. Palette reads as a ledger, not a landing page: paper white,
+   deep navy ink for text, one controlled teal accent for the primary action
+   and focus states, and "red ink" for errors - not a generic alert red. */
+:root {
+  --color-bg: #ffffff;
+  --color-ink: #16233d;
+  --color-ink-muted: #4b5768;
+  --color-line: #d7dce1;
+  --color-accent: #146356;
+  --color-accent-ink: #ffffff;
+  --color-error: #9a2b23;
+  --color-error-bg: #fbeeec;
+}
+
+* {
+  box-sizing: border-box;
+}
+
 body {
   margin: 0;
-  font-family: system-ui, sans-serif;
-  color: #1a1a1a;
-  background: #fff;
+  font-family:
+    system-ui,
+    -apple-system,
+    "Segoe UI",
+    sans-serif;
+  color: var(--color-ink);
+  background: var(--color-bg);
+  line-height: 1.5;
 }
 
 #root {
-  max-width: 720px;
+  max-width: 760px;
   margin: 0 auto;
-  padding: 2rem 1rem;
+  padding: 2.5rem 1.25rem;
 }
 
 h1 {
-  font-size: 1.5rem;
+  font-size: 1.375rem;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  margin: 0 0 1.5rem;
 }
 
+/* Symbol form: label, input, and button share one row and one visual size,
+   so the label reads as part of the control rather than a caption above it. */
 form {
   display: flex;
-  align-items: flex-start;
-  gap: 0.5rem;
+  align-items: center;
+  gap: 0.625rem;
   flex-wrap: wrap;
-  margin-bottom: 1rem;
+  margin-bottom: 1.5rem;
 }
 
 form label {
-  display: block;
-  font-size: 0.875rem;
-  margin-bottom: 0.25rem;
+  font-size: 1rem;
+  color: var(--color-ink);
+  white-space: nowrap;
 }
 
 input[type="text"] {
   font-size: 1rem;
-  padding: 0.4rem 0.6rem;
-  border: 1px solid #999;
-  border-radius: 4px;
+  font-family: inherit;
+  color: var(--color-ink);
+  padding: 0.5rem 0.75rem;
+  border: 1px solid var(--color-line);
+  border-radius: 6px;
+  background: var(--color-bg);
 }
 
 button {
   font-size: 1rem;
-  padding: 0.45rem 1rem;
-  border: 1px solid #1a1a1a;
-  border-radius: 4px;
-  background: #1a1a1a;
-  color: #fff;
+  font-family: inherit;
+  font-weight: 600;
+  padding: 0.5rem 1.125rem;
+  border: 1px solid var(--color-accent);
+  border-radius: 6px;
+  background: var(--color-accent);
+  color: var(--color-accent-ink);
   cursor: pointer;
+}
+
+button:hover {
+  background: color-mix(in srgb, var(--color-accent) 88%, black);
 }
 
 button:disabled {
@@ -51,19 +88,45 @@ button:disabled {
   cursor: not-allowed;
 }
 
+/* Visible keyboard focus on every interactive control, using the one accent
+   color consistently. :focus-visible skips the ring for mouse clicks. */
+input[type="text"]:focus-visible,
+button:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 2px;
+}
+
+/* Errors (client-side validation, invalid symbol, failed request) share one
+   visual language: red ink, a left border, and a faint wash - distinct at a
+   glance from the neutral idle/loading/empty states below. */
+.validation-error,
+.status-message[role="alert"] {
+  color: var(--color-error);
+  background: var(--color-error-bg);
+  border-left: 3px solid var(--color-error);
+  padding: 0.5rem 0.75rem;
+  margin: 0;
+  font-size: 0.9375rem;
+  border-radius: 0 4px 4px 0;
+}
+
 .validation-error {
-  color: #b00020;
-  font-size: 0.875rem;
   width: 100%;
-  margin: 0.25rem 0 0;
 }
 
-.status-message {
-  color: #444;
+/* Idle, loading, and an empty result stay quiet: no color, no border. */
+.status-message[role="status"] {
+  color: var(--color-ink-muted);
+  font-size: 0.9375rem;
+  margin: 0;
 }
 
+/* Table: horizontal scroll is the deliberate answer to phone width (~390px)
+   rather than wrapping or shrinking cell content. */
 .table-scroll {
   overflow-x: auto;
+  border: 1px solid var(--color-line);
+  border-radius: 6px;
 }
 
 table {
@@ -74,15 +137,32 @@ table {
 caption {
   text-align: left;
   font-weight: 600;
-  margin-bottom: 0.5rem;
+  padding: 0.75rem 0.75rem 0.5rem;
 }
 
 th,
 td {
   text-align: right;
-  padding: 0.35rem 0.6rem;
-  border-bottom: 1px solid #ddd;
+  padding: 0.5rem 0.75rem;
+  border-bottom: 1px solid var(--color-line);
   white-space: nowrap;
+}
+
+th {
+  color: var(--color-ink-muted);
+  font-size: 0.8125rem;
+  font-weight: 600;
+}
+
+/* Numeric columns get tabular figures so digits line up vertically, the way
+   a ledger or spreadsheet aligns numbers - the one deliberate data-specific
+   typographic detail here. */
+td {
+  font-variant-numeric: tabular-nums;
+}
+
+tbody tr:last-child td {
+  border-bottom: none;
 }
 
 th:first-child,

@@ -1,6 +1,8 @@
 // The single aria-live region for every non-table state (idle, loading, an
 // empty result, an invalid symbol, or a failed request), so screen readers
-// announce each transition without needing focus to move anywhere.
+// announce each transition without needing focus to move anywhere. Invalid
+// and failed states use role="alert" (implicit aria-live="assertive") since
+// they need to interrupt; idle/loading/empty use role="status" (polite).
 
 import type { DailyAggregate } from "../api/types";
 
@@ -32,8 +34,10 @@ export function StatusMessage({ state }: { state: ViewState }) {
     return null;
   }
 
+  const isError = state.kind === "invalid" || state.kind === "failed";
+
   return (
-    <p role="status" aria-live="polite" className="status-message">
+    <p role={isError ? "alert" : "status"} aria-live={isError ? "assertive" : "polite"} className="status-message">
       {message}
     </p>
   );
