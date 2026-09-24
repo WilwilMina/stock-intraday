@@ -3,10 +3,15 @@
 
 import { loadConfig } from "./config/env.js";
 import { buildApp } from "./app.js";
+import { YahooMarketDataProvider } from "./providers/YahooMarketDataProvider.js";
 
 async function main(): Promise<void> {
   const config = loadConfig();
-  const app = await buildApp(config);
+  const provider = new YahooMarketDataProvider({
+    baseUrl: config.yahooBaseUrl,
+    requestTimeoutMs: config.requestTimeoutMs,
+  });
+  const app = await buildApp(config, { provider });
 
   try {
     await app.listen({ port: config.port, host: "0.0.0.0" });
