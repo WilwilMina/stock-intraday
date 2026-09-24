@@ -94,3 +94,11 @@ Two implementation notes that came out of the same session, not disagreements wi
 - [ ] `PROMPT_LOG.md` (every AI prompt: what, why, kept/changed/rejected)
 - [ ] Manual changes documented (section at the bottom of `PROMPT_LOG.md`)
 - [ ] Pushed to GitHub
+
+
+To Do/Improvements:
+1. Readable config errors. Catch the ZodError in loadConfig, print one line like Invalid config: PORT: Expected number, received nan, and exit with code 1. About 5 minutes. Do this one by hand. It's a real manual change for deliverable #4, and you can explain it.
+2. .env.example. List every env var with its default, and point to it from the README. About 2 minutes.
+3. engines in package.json. Declare the Node version, and state it in the README.
+4. Graceful shutdown. On SIGINT/SIGTERM, close the Fastify server before exiting. About 3 minutes. It's a small production-readiness point a reviewer notices.
+5. Consistent npm scripts. dev, build, start, test, lint, and typecheck should all exist, so a reviewer can run each without guessing.
